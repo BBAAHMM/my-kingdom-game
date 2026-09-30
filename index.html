@@ -1,6 +1,9 @@
-….
-
-<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>الممالك الجبارة</title>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>الممالك الجبارة</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap">
 <style>
 :root{--bg:#f1ede2;--c:#fffdf9;--t:#232323;--s:#6b7280;--a:#b45309;--a2:#d97706;--b:#e2d9c4;--g:#15803d;--r:#b91c1c;--sh:0 4px 14px rgba(0,0,0,.06);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -24,7 +27,14 @@ button:active{opacity:.8}button:disabled{opacity:.45;cursor:not-allowed}
 .timer{text-align:center;font-weight:800;font-size:1.3rem;color:var(--r);margin:2px 0 8px}
 .star{color:var(--a2)}
 label.lbl{font-weight:700;font-size:.9rem;color:var(--s);display:block;margin-top:6px}
-</style></head><body><div class="w"><h1>🏰 الممالك الجبارة</h1><div id="app" class="k">جارٍ الاتصال…</div></div>
+</style>
+</head>
+<body>
+<div class="w">
+  <h1>🏰 الممالك الجبارة</h1>
+  <div id="app" class="k">جارٍ الاتصال…</div>
+</div>
+
 <script type="module">
 const $=id=>document.getElementById(id),esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const army=p=>p.res+p.L.reduce((a,l)=>a+l.d,0),val=p=>p.L.reduce((a,l)=>a+l.p+2,0)+2*army(p)+p.g;
@@ -35,7 +45,7 @@ const R=[
 {n:"المتوازن أ ⚖️",l:[1,2,2,3],a:4,g:26,m:"بناء الإمبراطورية: امتلك 9 أراضي",f:p=>p.L.length>=9},
 {n:"المتوازن ب ⚖️",l:[2,2,2,2],a:5,g:24,m:"الحاكم الحكيم: 7 أراضي + 8 جنود + 45 ذهب معاً",f:p=>p.L.length>=7&&army(p)>=8&&p.g>=45},
 {n:"جامع الذهب 🏦",l:[1,1,3,3],a:3,g:28,m:"الخزينة الحصينة: 65 ذهب + 12 جندياً معاً",f:p=>p.g>=65&&army(p)>=12},
-{n:"المتوازن ج ⚖️️",l:[2,2,3],a:6,g:25,m:"المحتل الكبير: امتلك 9 أراضي",f:p=>p.L.length>=9}];
+{n:"المتوازن ج ⚖",l:[2,2,3],a:6,g:25,m:"المحتل الكبير: امتلك 9 أراضي",f:p=>p.L.length>=9}];
 const T={rest:"💤 راحة",recruit:"⚔️ تجنيد (2 ذهب/جندي، أقصى 2)",defend:"🛡️ دفاع (1 ذهب)",fortify:"🏰 تحصين (2 ذهب)",move:"🚶 نقل",attack:"⚔️ هجوم (1 ذهب)",raid:"💨 إغارة خاطفة (1 ذهب)",buyWeapon:"🏭 شركة السلاح (20 ذهب، من الجولة 5)",buyGold:"🏦 شركة الذهب (20 ذهب، من الجولة 5)"};
 const ROUND_MS=180000;
 let db,S=null,slots=[],orders=[],me=-1,fr=-1,busy=false,cid,tmrEl;
@@ -113,9 +123,6 @@ function draw(){
  $('log').innerHTML=S.log.map(l=>`<div>${esc(l)}</div>`).join('');
  if(p&&!S.over){const done=orders[me]&&orders[me].round==S.round;if(fr!=S.round){fields2go();fields(1);fields(2)}$('sb').disabled=done;$('sb').textContent=done?'✅ أُرسلت — بانتظار الباقين':'تأكيد وإرسال ✅'}else if(S.over)$('form').innerHTML='';$('rs').innerHTML=(S.over?'<button onclick="reset()">لعبة جديدة</button>':'')+'<button onclick="reset()" style="background:var(--r);opacity:.85">🔄 إعادة تعيين اللعبة (لأي حالة)</button>'}
 
-// ============================================================
-// 🔑 تم دمج مفاتيح Firebase الخاصة بك بنجاح 🔑
-// ============================================================
 const firebaseConfig = {
   apiKey: "AIzaSyDI6hf8W3bXXLYqNsgPW_mGVZeho1JMObk",
   authDomain: "my-kingdom-31059.firebaseapp.com",
@@ -125,7 +132,6 @@ const firebaseConfig = {
   appId: "1:60540890644:web:3dfd3090743b0fd3e0c101",
   measurementId: "G-GP3ZE4CPVX"
 };
-// ============================================================
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
 import { getFirestore, doc, getDoc, setDoc, deleteDoc, onSnapshot, collection }
@@ -150,10 +156,6 @@ function mkDb(fdb){
 }
 
 (async()=>{
- if(firebaseConfig.apiKey.startsWith('PASTE_')){
-   $('app').innerHTML = '⚠️ لسا ما لصقت مفاتيح Firebase (firebaseConfig) بالكود. افتح الملف بمحرر نصوص وحطها مكان الكلام المكتوب "PASTE_YOUR_..." بالأعلى.';
-   return;
- }
  try{
    const fapp = initializeApp(firebaseConfig);
    db = mkDb(getFirestore(fapp));
@@ -163,5 +165,6 @@ function mkDb(fdb){
  db.collection('orders').onSnapshot(q=>{orders=[];q.docs.forEach(d=>orders[+d.id]=d.data());draw();tick()});
  draw();
 })();
-</script></body></html>
-
+</script>
+</body>
+</html>
