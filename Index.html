@@ -1,0 +1,167 @@
+….
+
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>الممالك الجبارة</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap">
+<style>
+:root{--bg:#f1ede2;--c:#fffdf9;--t:#232323;--s:#6b7280;--a:#b45309;--a2:#d97706;--b:#e2d9c4;--g:#15803d;--r:#b91c1c;--sh:0 4px 14px rgba(0,0,0,.06);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0f1420;--c:#1a2233;--t:#f3f4f6;--s:#9ca3af;--a:#f59e0b;--a2:#fbbf24;--b:#2d3748;--g:#34d399;--r:#f87171;--sh:0 4px 18px rgba(0,0,0,.35)}}
+:root[data-theme=dark]{--bg:#0f1420;--c:#1a2233;--t:#f3f4f6;--s:#9ca3af;--a:#f59e0b;--a2:#fbbf24;--b:#2d3748;--g:#34d399;--r:#f87171;--sh:0 4px 18px rgba(0,0,0,.35)}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--t);font-family:'Cairo',system-ui,Tahoma,sans-serif;padding:12px;line-height:1.6}
+.w{max-width:640px;margin:auto}
+h1{background:linear-gradient(90deg,var(--a),var(--a2));-webkit-background-clip:text;background-clip:text;color:transparent;text-align:center;font-weight:800;font-size:1.8rem;margin:8px 0 14px}
+h3{color:var(--a2);text-align:center;margin:4px 0 10px;font-weight:700}
+.k{background:var(--c);border:1px solid var(--b);border-radius:16px;padding:14px;margin-bottom:12px;box-shadow:var(--sh)}
+button,input,select{width:100%;box-sizing:border-box;padding:11px;margin:5px 0;border-radius:10px;border:1px solid var(--b);background:var(--bg);color:var(--t);font-family:inherit;font-size:1rem}
+button{background:linear-gradient(135deg,var(--a),var(--a2));color:#fff;border:0;font-weight:700;cursor:pointer;transition:opacity .15s}
+button:active{opacity:.8}button:disabled{opacity:.45;cursor:not-allowed}
+.g{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px}
+.b{border:1px solid var(--b);border-radius:12px;padding:9px;text-align:center;background:var(--bg)}
+.v{font-size:1.35rem;font-weight:800;color:var(--a2)}
+.m{background:linear-gradient(135deg,#4338ca22,#6366f122);border:1px solid #6366f1;padding:10px;border-radius:12px}
+#log{max-height:230px;overflow:auto;font-size:.9rem}#log div{border-bottom:1px dashed var(--b);padding:4px 0}
+.win{background:linear-gradient(135deg,var(--g),#059669);color:#fff;text-align:center;font-weight:800;padding:14px;border-radius:14px;margin-bottom:12px;font-size:1.1rem}
+.timer{text-align:center;font-weight:800;font-size:1.3rem;color:var(--r);margin:2px 0 8px}
+.star{color:var(--a2)}
+label.lbl{font-weight:700;font-size:.9rem;color:var(--s);display:block;margin-top:6px}
+</style></head><body><div class="w"><h1>🏰 الممالك الجبارة</h1><div id="app" class="k">جارٍ الاتصال…</div></div>
+<script type="module">
+const $=id=>document.getElementById(id),esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const army=p=>p.res+p.L.reduce((a,l)=>a+l.d,0),val=p=>p.L.reduce((a,l)=>a+l.p+2,0)+2*army(p)+p.g;
+const R=[
+{n:"التوسعي 🏰",l:[1,1,2,2,3],a:2,g:27,m:"القائد العسكري: امتلك 16 جندياً (كل جنودك) في نفس الجولة",f:p=>army(p)>=16},
+{n:"العسكري ⚔️",l:[2,3,4],a:7,g:21,m:"الملك الثري: اجمع 85 ذهباً في نفس الجولة",f:p=>p.g>=85},
+{n:"الاقتصادي 💰",l:[1,1,2],a:2,g:36,m:"المحارب الفاتح: حقق 8 هجمات ناجحة (هجوم عادي فقط)",f:p=>p.w>=8},
+{n:"المتوازن أ ⚖️",l:[1,2,2,3],a:4,g:26,m:"بناء الإمبراطورية: امتلك 9 أراضي",f:p=>p.L.length>=9},
+{n:"المتوازن ب ⚖️",l:[2,2,2,2],a:5,g:24,m:"الحاكم الحكيم: 7 أراضي + 8 جنود + 45 ذهب معاً",f:p=>p.L.length>=7&&army(p)>=8&&p.g>=45},
+{n:"جامع الذهب 🏦",l:[1,1,3,3],a:3,g:28,m:"الخزينة الحصينة: 65 ذهب + 12 جندياً معاً",f:p=>p.g>=65&&army(p)>=12},
+{n:"المتوازن ج ⚖️️",l:[2,2,3],a:6,g:25,m:"المحتل الكبير: امتلك 9 أراضي",f:p=>p.L.length>=9}];
+const T={rest:"💤 راحة",recruit:"⚔️ تجنيد (2 ذهب/جندي، أقصى 2)",defend:"🛡️ دفاع (1 ذهب)",fortify:"🏰 تحصين (2 ذهب)",move:"🚶 نقل",attack:"⚔️ هجوم (1 ذهب)",raid:"💨 إغارة خاطفة (1 ذهب)",buyWeapon:"🏭 شركة السلاح (20 ذهب، من الجولة 5)",buyGold:"🏦 شركة الذهب (20 ذهب، من الجولة 5)"};
+const ROUND_MS=180000;
+let db,S=null,slots=[],orders=[],me=-1,fr=-1,busy=false,cid,tmrEl;
+try{cid=localStorage.getItem('kc')||(Math.random().toString(36).slice(2));localStorage.setItem('kc',cid)}catch(e){cid=cid||Math.random().toString(36).slice(2)}
+function rng(s){return()=>{s|=0;s=s+0x6D2B79F5|0;let t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function shuffled(arr,seed){const r=rng(seed),a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function resolve(S0,O){
+ const S=JSON.parse(JSON.stringify(S0)),P=S.P,L=[],log=m=>L.push(m);
+ const find=id=>{for(const p of P){const l=p.L.find(x=>x.id==id);if(l)return[p,l]}return[]};
+ const cs=[];P.forEach((p,i)=>(O[i]||[]).forEach(c=>cs.push({p,c})));
+ cs.forEach(({p,c})=>{if((c.t=='buyWeapon'||c.t=='buyGold')&&S.round>=5&&!p.co&&p.g>=20){p.g-=20;p.co=c.t=='buyWeapon'?'w':'g';log(`🏭 ${p.name} اشترى شركة ${c.t=='buyWeapon'?'السلاح':'الذهب'}`)}});
+ cs.forEach(({p,c})=>{if(c.t=='recruit'){const n=Math.min(2,Math.max(1,c.n||1));if(p.g>=2*n){p.g-=2*n;p.res+=n;log(`⚔️ ${p.name} جنّد ${n}`)}}});
+ cs.forEach(({p,c})=>{if(c.t=='fortify'){const l=p.L.find(x=>x.id==c.a);if(l&&p.g>=2){p.g-=2;l.f=true;log(`🏰 ${p.name} حصّن أرضاً`)}}});
+ cs.forEach(({p,c})=>{if(c.t=='defend'){const l=p.L.find(x=>x.id==c.a),n=c.n|0;if(l&&n>0&&p.res>=n&&p.g>=1){p.g--;p.res-=n;l.d+=n;log(`🛡️ ${p.name} عزّز دفاعه`)}}});
+ cs.forEach(({p,c})=>{if(c.t=='move'){const a=p.L.find(x=>x.id==c.a),b=p.L.find(x=>x.id==c.b),n=c.n|0;if(a&&b&&a!=b&&n>0&&a.d>=n){a.d-=n;b.d+=n;log(`🚶 ${p.name} نقل جنوداً`)}}});
+ const at=cs.filter(x=>x.c.t=='attack'||x.c.t=='raid'),r=rng(S.round*7919+13);
+ for(let i=at.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[at[i],at[j]]=[at[j],at[i]]}
+ const inc={};P.forEach(p=>inc[p.name]=p.L.length);
+ at.forEach(({p,c})=>{const A=c.n|0,[q,l]=find(c.a);
+  if(!l||q==p||A<2||p.res<A||p.g<1)return;p.g--;p.res-=A;
+  const D=l.p+l.d+(l.f?2:0),raid=c.t=='raid';
+  if(A>D){
+   if(raid){const s=Math.min(q.g,Math.max(1,l.p>>1)),lo=Math.floor(A/3);q.g-=s;p.g+=s;p.res+=A-lo;log(`💨 ${p.name} أغار على ${q.name} وسرق ${s} ذهب`)}
+   else if(q.L.length==1){const lo=Math.floor(A/2);q.noInc=1;p.g+=Math.floor(inc[q.name]/2);l.d=0;p.res+=A-lo;p.w++;log(`💥 ${p.name} نهب أرض ${q.name} الأخيرة (لا تُحتل)`)}
+   else{const lo=Math.floor(A/2);q.L=q.L.filter(x=>x!=l);l.d=A-lo;l.f=false;p.L.push(l);p.g+=l.p;p.w++;log(`⚔️ ${p.name} احتل أرضاً من ${q.name} (+${l.p} نهب)`)}
+  }else{const lo=Math.ceil(A/2);p.res+=A-lo;l.d-=Math.floor(l.d/2);log(`🛡️ ${q.name} صدّ ${raid?'إغارة':'هجوم'} ${p.name}`)}
+ });
+ P.forEach(p=>{if(!p.noInc)p.g+=p.L.length*(p.co=='g'?2:1);if(p.co=='w')p.res+=1;delete p.noInc;p.L.forEach(l=>l.f=false)});
+ const w=P.map((p,i)=>R[p.r].f(p)?i:-1).filter(i=>i>=0);
+ if(w.length){S.over=true;S.win=w;log(`🏆 فاز: ${w.map(i=>P[i].name).join(' و ')}`)}
+ S.log=[`— نتائج الجولة ${S.round} —`,...L,...S.log].slice(0,90);
+ if(!S.over){S.round++;S.roundStart=Date.now()}
+ return S}
+async function tick(){
+ if(busy||!S||!S.started||S.over)return;
+ const n=S.P.length;for(let i=0;i<n;i++)if(!orders[i]||orders[i].round!=S.round)return;
+ busy=true;try{const f=await db.doc('g/state').get();if(f.exists&&f.data().round==S.round)await db.doc('g/state').set(resolve(f.data(),orders.slice(0,n).map(o=>o.c)))}catch(e){}busy=false}
+const w=async f=>{try{await f()}catch(e){alert('تعذّرت الكتابة: '+(e.message||e.code)+'\nتأكد من صحة إعدادات Firebase وقواعد الأمان (Rules).')}};
+const join=i=>w(async()=>{const n=$('nm').value.trim();if(!n)return alert('اكتب اسمك');const d=await db.doc('slots/'+i).get();if(!d.exists)await db.doc('slots/'+i).set({name:n,cid})});
+const start=()=>w(async()=>{const cnt=slots.filter(Boolean).length,r=shuffled([...Array(7).keys()],Date.now()).slice(0,cnt);
+ await db.doc('g/state').set({round:1,started:true,over:false,win:[],roundStart:Date.now(),log:['بدأت اللعبة!'],P:slots.filter(Boolean).map((s,i)=>({name:s.name,cid:s.cid,r:r[i],g:R[r[i]].g,res:R[r[i]].a,w:0,co:null,L:R[r[i]].l.map((p,k)=>({id:i+'_'+k,p,d:0,f:false}))}))})});
+const reset=()=>confirm('لعبة جديدة؟ سيُمسح كل شيء')&&w(async()=>{const ps=[db.doc('g/state').delete()];for(let i=0;i<7;i++){ps.push(db.doc('slots/'+i).delete(),db.doc('orders/'+i).delete())}
+ const res=await Promise.allSettled(ps),bad=res.filter(x=>x.status=='rejected');
+ if(bad.length)throw new Error('فشل حذف '+bad.length+' عنصر — تحقق من قواعد الأمان (Rules) بمشروع Firebase.');
+ fr=-1});
+function nums(min,max){let o='';for(let i=min;i<=max;i++)o+=`<option value="${i}">${i}</option>`;return o||'<option value="0">لا يوجد</option>'}
+function fields(k){const t=$('t'+k).value,p=S.P[me],mine=(li,extra)=>p.L.map((l,i)=>`<option value="${l.id}" ${extra&&extra==l.id?'selected':''}>أرضي #${i+1}${li?` (مدافعون ${l.d})`:''}</option>`).join('');
+ const seedBase=S.round*104729+me*911;
+ const enOpts=S.P.map((q,qi)=>qi==me?'':`<optgroup label="${esc(q.name)}">${shuffled(q.L,seedBase+qi*13).map((l,idx)=>`<option value="${l.id}">أرض رقم ${idx+1}</option>`).join('')}</optgroup>`).join('');
+ if(t=='recruit')$('f'+k).innerHTML=`<label class="lbl">عدد الجنود</label><select id="n${k}"><option value="1">1 (2 ذهب)</option><option value="2">2 (4 ذهب - أقصى)</option></select>`;
+ else if(t=='defend')$('f'+k).innerHTML=`<label class="lbl">الأرض</label><select id="a${k}">${mine(1)}</select><label class="lbl">عدد الجنود من الاحتياط (لديك ${p.res})</label><select id="n${k}">${nums(1,p.res)}</select>`;
+ else if(t=='fortify')$('f'+k).innerHTML=`<label class="lbl">الأرض</label><select id="a${k}">${mine(0)}</select>`;
+ else if(t=='move')$('f'+k).innerHTML=`<label class="lbl">من</label><select id="a${k}" onchange="moveMax(${k})">${mine(1)}</select><label class="lbl">إلى</label><select id="b${k}">${mine(0)}</select><label class="lbl">العدد</label><select id="n${k}"></select>`;
+ else if(t=='attack'||t=='raid')$('f'+k).innerHTML=`<label class="lbl">هدف الهجوم</label><select id="a${k}">${enOpts}</select><label class="lbl">عدد الجنود المهاجمين (لديك ${p.res})</label><select id="n${k}">${nums(2,p.res)}</select>`;
+ else $('f'+k).innerHTML='';
+ if(t=='move')moveMax(k)}
+function moveMax(k){const p=S.P[me],l=p.L.find(x=>x.id==$('a'+k).value);$('n'+k).innerHTML=nums(1,l?l.d:0)}
+const send=()=>w(async()=>{const c=[1,2].map(k=>({t:$('t'+k).value,a:$('a'+k)?.value||'',b:$('b'+k)?.value\vert{}\vert{}'',n:+($('n'+k)?.value)||0}));
+ for(const x of c)if((x.t=='attack'||x.t=='raid')&&(!x.a||x.n<2))return alert('اختر هدفاً وعدد جنود صحيح للهجوم');
+ await db.doc('orders/'+me).set({round:S.round,c})});
+function fmtTime(ms){const s=Math.max(0,Math.ceil(ms/1000)),m=Math.floor(s/60),ss=s%60;return `${m}:${ss.toString().padStart(2,'0')}`}
+let timerIv=null;
+function startTimerLoop(){if(timerIv)return;timerIv=setInterval(async()=>{
+ if(!S||!S.started||S.over||!S.roundStart){if(tmrEl)tmrEl.textContent='';return}
+ const left=ROUND_MS-(Date.now()-S.roundStart);
+ if(tmrEl)tmrEl.textContent='⏱️ '+fmtTime(left);
+ if(left<=0&&me>=0&&!(orders[me]&&orders[me].round==S.round)){await w(async()=>{await db.doc('orders/'+me).set({round:S.round,c:[{t:'rest'},{t:'rest'}]})})}
+},1000)}
+function fields2go(){fr=S.round;$('form').innerHTML=[1,2].map(k=>`<label class="lbl">الأمر ${k}</label><select id="t${k}" onchange="fields(${k})">${Object.entries(T).filter(([kk])=>!(kk=='buyWeapon'||kk=='buyGold')||(S.round>=5&&!S.P[me].co)).map(([a,b])=>`<option value="${a}">${b}</option>`).join('')}</select><div id="f${k}"></div>`).join('')+`<button id="sb" onclick="send()">تأكيد وإرسال ✅</button>`}
+function draw(){
+ const A=$('app');const sm=slots.findIndex(s=>s&&s.cid==cid);me=S&&S.started?S.P.findIndex(p=>p.cid==cid):sm;
+ if(!S||!S.started){fr=-1;A.innerHTML=`<h3>غرفة الانتظار</h3>${me<0?'<input id="nm" placeholder="اسمك / اسم مملكتك">':''}`+[0,1,2,3,4,5,6].map(i=>slots[i]?`<div class="b" style="margin:4px 0">${esc(slots[i].name)}${i==me?' <span class="star">⭐ (أنت)</span>':''}</div>`:`<button onclick="join(${i})" ${me>=0?'disabled':''}>انضم كلاعب ${i+1}</button>`).join('')+(slots.filter(Boolean).length>=2?'<button onclick="start()" style="background:var(--g)">ابدأ اللعبة 🚀</button>':'<p style="text-align:center;color:var(--s)">بانتظار لاعبَين على الأقل (حتى 7). لا تبدأوا قبل اكتمال الجميع!</p>')+(slots.some(Boolean)?'<button onclick="reset()" style="background:var(--r);opacity:.85">🔄 إعادة تعيين (تفريغ كل المقاعد)</button>':'');return}
+ const P=S.P,p=me>=0?P[me]:null,sub=P.map((_,i)=>i).filter(i=>orders[i]&&orders[i].round==S.round).length;
+ if(!$('top')){A.innerHTML='<div id="top"></div><div id="tmr" class="timer"></div><div id="form"></div><h3>📜 السجل</h3><div id="log"></div><div id="rs"></div>';tmrEl=$('tmr');startTimerLoop()}$('top').innerHTML=(S.over?`<div class="win">🏆 انتهت اللعبة — الفائز: ${S.win.map(i=>esc(P[i].name)).join(' و ')}</div>`:'')+`<h3>الجولة ${S.round} — أُرسلت أوامر ${sub}/${P.length}</h3><div class="g">${P.map((q,i)=>`<div class="b"><b>${esc(q.name)}${i==me?' <span class="star">⭐</span>':''}</b><br>🏰 ${q.L.length} أراضي</div>`).join('')}</div>`+(p?`<div class="m" style="margin:10px 0"><b>${R[p.r].n}</b> — 🎯 ${R[p.r].m}</div><div class="g"><div class="b">💰<div class="v">${p.g}</div></div><div class="b">⚔️ احتياط<div class="v">${p.res}</div></div><div class="b">👥 كل الجنود<div class="v">${army(p)}</div></div></div><div class="g" style="margin-top:8px">${p.L.map((l,i)=>`<div class="b">أرض #${i+1} قوة ${l.p}<br>🛡️ ${l.d}${l.f?'<br>🏰+2':''}</div>`).join('')}</div>${p.co?`<p style="text-align:center;color:var(--s)">🏭 تملك شركة ${p.co=='w'?'السلاح':'الذهب'}</p>`:''}`:'<p>أنت متفرج.</p>');
+ $('log').innerHTML=S.log.map(l=>`<div>${esc(l)}</div>`).join('');
+ if(p&&!S.over){const done=orders[me]&&orders[me].round==S.round;if(fr!=S.round){fields2go();fields(1);fields(2)}$('sb').disabled=done;$('sb').textContent=done?'✅ أُرسلت — بانتظار الباقين':'تأكيد وإرسال ✅'}else if(S.over)$('form').innerHTML='';$('rs').innerHTML=(S.over?'<button onclick="reset()">لعبة جديدة</button>':'')+'<button onclick="reset()" style="background:var(--r);opacity:.85">🔄 إعادة تعيين اللعبة (لأي حالة)</button>'}
+
+// ============================================================
+// 🔑 تم دمج مفاتيح Firebase الخاصة بك بنجاح 🔑
+// ============================================================
+const firebaseConfig = {
+  apiKey: "AIzaSyDI6hf8W3bXXLYqNsgPW_mGVZeho1JMObk",
+  authDomain: "my-kingdom-31059.firebaseapp.com",
+  projectId: "my-kingdom-31059",
+  storageBucket: "my-kingdom-31059.firebasestorage.app",
+  messagingSenderId: "60540890644",
+  appId: "1:60540890644:web:3dfd3090743b0fd3e0c101",
+  measurementId: "G-GP3ZE4CPVX"
+};
+// ============================================================
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+import { getFirestore, doc, getDoc, setDoc, deleteDoc, onSnapshot, collection }
+  from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+
+function mkDb(fdb){
+  return {
+    doc(path){
+      const [col,id]=path.split('/'), ref=doc(fdb,col,id);
+      return {
+        async get(){const s=await getDoc(ref);return {exists:s.exists(),data:()=>s.data()}},
+        async set(d){await setDoc(ref,d)},
+        async delete(){await deleteDoc(ref)},
+        onSnapshot(cb){return onSnapshot(ref,s=>cb({exists:s.exists(),data:()=>s.data()}))}
+      }
+    },
+    collection(name){
+      const ref=collection(fdb,name);
+      return { onSnapshot(cb){return onSnapshot(ref,qs=>cb({docs:qs.docs.map(d=>({id:d.id,data:()=>d.data()}))}))} }
+    }
+  }
+}
+
+(async()=>{
+ if(firebaseConfig.apiKey.startsWith('PASTE_')){
+   $('app').innerHTML = '⚠️ لسا ما لصقت مفاتيح Firebase (firebaseConfig) بالكود. افتح الملف بمحرر نصوص وحطها مكان الكلام المكتوب "PASTE_YOUR_..." بالأعلى.';
+   return;
+ }
+ try{
+   const fapp = initializeApp(firebaseConfig);
+   db = mkDb(getFirestore(fapp));
+ }catch(e){ $('app').textContent='تعذّر الاتصال بـ Firebase: '+e.message; return; }
+ db.doc('g/state').onSnapshot(s=>{S=s.exists?s.data():null;draw();tick()});
+ db.collection('slots').onSnapshot(q=>{slots=[];q.docs.forEach(d=>slots[+d.id]=d.data());draw()});
+ db.collection('orders').onSnapshot(q=>{orders=[];q.docs.forEach(d=>orders[+d.id]=d.data());draw();tick()});
+ draw();
+})();
+</script></body></html>
+
